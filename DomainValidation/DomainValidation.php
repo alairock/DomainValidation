@@ -27,7 +27,7 @@ class DomainValidation {
  * @param string
  * @access private
  */
-	private $__tldUrl = 'http://data.iana.org/TLD/tlds-alpha-by-domain.txt';
+	private static $__tldUrl = 'http://data.iana.org/TLD/tlds-alpha-by-domain.txt';
 
 /**
  * TLD File Variable
@@ -38,7 +38,7 @@ class DomainValidation {
  * @param string
  * @access private
  */
-	private $__tldList = 'tlds.txt';
+	private static $__tldList = 'tlds.txt';
 
 /**
  * File Freshness Threshhold
@@ -72,9 +72,9 @@ class DomainValidation {
 		$this->curl = !is_null($curler) ? $curler : new Domain;
 	}
 
-	public function fetchTlds($filename = null) {
+	public static function fetchTlds($filename = null) {
 		$filename = empty($filename) ? 'tlds.txt' : $filename;
-		file_put_contents($filename, file_get_contents($this->__tldUrl));
+		file_put_contents($filename, file_get_contents(self::$__tldUrl));
 		return true;
 	}
 
@@ -514,7 +514,7 @@ class DomainValidation {
 	private function __validTLD() {
 		$this->__tldFileStatusCheck();
 		$tldRegex = null;
-		foreach (file($this->__tldList) as $tld) {
+		foreach (file(self::$__tldList) as $tld) {
 			if (preg_match('/^[\w]+$/', $tld)) {
 				$tldRegex .= preg_replace('/\W/', '', $tld) . "|";
 			}
@@ -533,8 +533,8 @@ class DomainValidation {
  */
 	private function __tldFileStatusCheck() {
 		date_default_timezone_set($this->__timezone);
-		if (!file_exists($this->__tldList) || (time() - filemtime($this->__tldList)) > 60 * 60 * 24 * $this->__fileAge) {
-			$this->fetchTlds($this->$__tldList);
+		if (!file_exists(self::$__tldList) || (time() - filemtime(self::$__tldList)) > 60 * 60 * 24 * $this->__fileAge) {
+			static::fetchTlds(self::$__tldList);
 		}
 	}
 }
