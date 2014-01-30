@@ -1,4 +1,6 @@
-[![build status](https://travis-ci.org/alairock/DomainValidation.png?branch=master)](https://travis-ci.org/alairock/DomainValidation)
+[![Build Status](https://secure.travis-ci.org/alairock/DomainValidation.png)](http://travis-ci.org/alairock/DomainValidation)
+
+Domain Validation
 ================
 
 Domain Validator for Composer
