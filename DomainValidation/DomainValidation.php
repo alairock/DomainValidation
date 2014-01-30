@@ -72,9 +72,8 @@ class DomainValidation {
 		$this->curl = !is_null($curler) ? $curler : new Domain;
 	}
 
-	public static function fetchTlds($filename = null) {
-		$filename = empty($filename) ? 'tlds.txt' : $filename;
-		file_put_contents($filename, file_get_contents(self::$__tldUrl));
+	public static function fetchTlds() {
+		file_put_contents(dirname(dirname(__FILE__)) . '/tlds.txt', file_get_contents(self::$__tldUrl), LOCK_EX);
 		return true;
 	}
 
@@ -534,7 +533,7 @@ class DomainValidation {
 	private function __tldFileStatusCheck() {
 		date_default_timezone_set($this->__timezone);
 		if (!file_exists(self::$__tldList) || (time() - filemtime(self::$__tldList)) > 60 * 60 * 24 * $this->__fileAge) {
-			static::fetchTlds(self::$__tldList);
+			static::fetchTlds();
 		}
 	}
 }
