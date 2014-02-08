@@ -10,7 +10,8 @@
 	},
 	"require": {
 		"php": ">=5.4.0",
-        "Mockery/Mockery": ">=0.7.2"
+        "Mockery/Mockery": ">=0.7.2",
+        "phpunit/phpunit": "3.7.*"
     },
     "scripts": {
 	    "post-update-cmd": "DomainValidation\\DomainValidation::fetchTlds",
