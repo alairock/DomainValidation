@@ -67,8 +67,8 @@ class DomainValidation {
  *
  * @return bool
  */
-	public function fetchTlds() {
-		if ($this->saveRemoteContents(dirname(dirname(__FILE__)) . '/' . self::$__tldList, $this->_fetchRemoteContents(self::$__tldUrl))) {
+	public static function fetchTlds() {
+		if (self::saveRemoteContents(dirname(dirname(__FILE__)) . '/' . self::$__tldList, self::_fetchRemoteContents(self::$__tldUrl))) {
 			return true;
 		}
 		return false;
@@ -84,7 +84,7 @@ class DomainValidation {
  * @param string $contentsToSave
  * @return int
  */
-	public function saveRemoteContents($saveFile = null, $contentsToSave = null) {
+	public static function saveRemoteContents($saveFile = null, $contentsToSave = null) {
 		return file_put_contents($saveFile, $contentsToSave, LOCK_EX);
 	}
 
@@ -96,7 +96,7 @@ class DomainValidation {
  * @param string$remoteFile
  * @return string
  */
-	protected function _fetchRemoteContents($remoteFile = null) {
+	protected static function _fetchRemoteContents($remoteFile = null) {
 		return file_get_contents($remoteFile);
 	}
 
