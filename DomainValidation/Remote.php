@@ -1,6 +1,6 @@
 <?php namespace DomainValidation;
 
-class Domain {
+class Remote {
 
 	public function checkUrlStatus($url) {
 		$handle = curl_init($url);

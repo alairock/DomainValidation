@@ -23,6 +23,18 @@ private static $tldFilename = 'tlds.txt';
 		unset($this->DomainValidation);
 	}
 
+
+/**
+ * testFetchTlds
+ *
+ * @return void
+ */
+	public function testFetchTlds() {
+		$mock = \Mockery::mock('DomainValidation\DomainValidation[saveRemoteContents]');
+		$mock->shouldReceive('saveRemoteContents')->once()->andReturn('false');
+		$this->assertTrue($mock->fetchTlds());
+	}
+
 /**
  * testValidate method
  *

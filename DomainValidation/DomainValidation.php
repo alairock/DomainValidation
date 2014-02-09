@@ -41,16 +41,6 @@ class DomainValidation {
 	private static $__tldList = 'tlds.txt';
 
 /**
- * File Freshness Threshhold
- *
- * set the length of time (default is 30)
- *
- * @param string $__fileAge
- * @access private
- */
-	private $__fileAge = 30;
-
-/**
  * Curl Object definition
  *
  * @param object $curl
@@ -69,12 +59,45 @@ class DomainValidation {
 	private $__timezone = 'America/Denver';
 
 	public function __construct($curler = null) {
-		$this->curl = !is_null($curler) ? $curler : new Domain;
+		$this->curl = !is_null($curler) ? $curler : new Remote;
 	}
 
-	public static function fetchTlds() {
-		file_put_contents(dirname(dirname(__FILE__)) . '/tlds.txt', file_get_contents(self::$__tldUrl), LOCK_EX);
-		return true;
+/**
+ * Fetch Tlds and store them in root.
+ *
+ * @return bool
+ */
+	public function fetchTlds() {
+		if ($this->saveRemoteContents(dirname(dirname(__FILE__)) . '/' . self::$__tldList, $this->_fetchRemoteContents(self::$__tldUrl))) {
+			return true;
+		}
+		return false;
+	}
+
+/**
+ * Save remote contents
+ *
+ * Here we are just going to save data to a specified path/file
+ *
+ * @access private
+ * @param string $saveFile
+ * @param string $contentsToSave
+ * @return int
+ */
+	public function saveRemoteContents($saveFile = null, $contentsToSave = null) {
+		return file_put_contents($saveFile, $contentsToSave, LOCK_EX);
+	}
+
+/**
+ * Fetch remote contents
+ *
+ * Give a url and we will fetch the contents
+ *
+ * @param string$remoteFile
+ * @return string
+ */
+	protected function _fetchRemoteContents($remoteFile = null) {
+		return file_get_contents($remoteFile);
 	}
 
 /**
@@ -117,7 +140,7 @@ class DomainValidation {
  * @param string $url The url to build the parts for.
  * @return array $parts The parts of the URL
  * @access public
- * @throws Exception A url must be passed to urlParts
+ * @throws \Exception A url must be passed to urlParts
  **/
 	public function urlParts($url = null) {
 		if (!$url) {
@@ -507,11 +530,9 @@ class DomainValidation {
  * In order for the TLD list to stay up to date, _tld_files_status_check is called
  *
  * @static
- * @uses $this->__tldFileStatusCheck() To check the freshness of the file
  * @return array An array of all of the valid TLDs
  */
 	private function __validTLD() {
-		$this->__tldFileStatusCheck();
 		$tldRegex = null;
 		foreach (file(self::$__tldList) as $tld) {
 			if (preg_match('/^[\w]+$/', $tld)) {
@@ -520,20 +541,5 @@ class DomainValidation {
 		}
 		$tldRegex = rtrim($tldRegex, '|');
 		return $tldRegex;
-	}
-
-/**
- * Check the status of the TLD file
- *
- * Check the Current Freshness of the local TLD list to see if we need to download another copy
- *
- * @static
- * @access private
- */
-	private function __tldFileStatusCheck() {
-		date_default_timezone_set($this->__timezone);
-		if (!file_exists(self::$__tldList) || (time() - filemtime(self::$__tldList)) > 60 * 60 * 24 * $this->__fileAge) {
-			static::fetchTlds();
-		}
 	}
 }
