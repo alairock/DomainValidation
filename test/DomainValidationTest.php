@@ -45,8 +45,9 @@ private static $tldFilename = 'tlds.txt';
  * @return void
  */
 	public function testValidateLive($url, $expected) {
-		$mock = \Mockery::mock('DomainValidation\DomainValidation[curl]');
-		$mock->shouldReceive('curl')->andReturn($expected);
+		$mock = \Mockery::mock('DomainValidation\Remote[checkUrlStatus]');
+		$mock->shouldReceive('checkUrlStatus')->andReturn($expected);
+		$this->DomainValidation = new DV($mock);
 		$result = $this->DomainValidation->validate($url, true);
 		if ($expected) {
 			$this->assertTrue($result);
