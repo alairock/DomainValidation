@@ -14,8 +14,8 @@
         "phpunit/phpunit": "3.7.*"
     },
     "scripts": {
-	    "post-update-cmd": "DomainValidation\\DomainValidation::fetchTlds",
-	    "post-install-cmd": "DomainValidation\\DomainValidation::fetchTlds"
+	    "post-update-cmd": "DomainValidation\\Remote::fetchTlds",
+	    "post-install-cmd": "DomainValidation\\Remote::fetchTlds"
 	}
 }
 

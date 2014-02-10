@@ -23,18 +23,6 @@ private static $tldFilename = 'tlds.txt';
 		unset($this->DomainValidation);
 	}
 
-
-/**
- * testFetchTlds
- *
- * @return void
- */
-	public function testFetchTlds() {
-		$mock = \Mockery::mock('DomainValidation\DomainValidation[saveRemoteContents]');
-		$mock->shouldReceive('saveRemoteContents')->once()->andReturn('false');
-		$this->assertTrue($mock->fetchTlds());
-	}
-
 /**
  * testValidate method
  *
@@ -57,6 +45,8 @@ private static $tldFilename = 'tlds.txt';
  * @return void
  */
 	public function testValidateLive($url, $expected) {
+		$mock = \Mockery::mock('DomainValidation\DomainValidation[curl]');
+		$mock->shouldReceive('curl')->andReturn($expected);
 		$result = $this->DomainValidation->validate($url, true);
 		if ($expected) {
 			$this->assertTrue($result);

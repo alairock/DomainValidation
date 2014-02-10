@@ -22,25 +22,6 @@ use DomainValidation\Domain as Domain;
 class DomainValidation {
 
 /**
- * URL to the tld list
- *
- * @param string
- * @access private
- */
-	private static $__tldUrl = 'http://data.iana.org/TLD/tlds-alpha-by-domain.txt';
-
-/**
- * TLD File Variable
- *
- * Writes the file to the webroot directory by default
- *
- * @filesource http://data.iana.org/TLD/tlds-alpha-by-domain.txt
- * @param string
- * @access private
- */
-	private static $__tldList = 'tlds.txt';
-
-/**
  * Curl Object definition
  *
  * @param object $curl
@@ -60,44 +41,6 @@ class DomainValidation {
 
 	public function __construct($curler = null) {
 		$this->curl = !is_null($curler) ? $curler : new Remote;
-	}
-
-/**
- * Fetch Tlds and store them in root.
- *
- * @return bool
- */
-	public static function fetchTlds() {
-		if (self::saveRemoteContents(dirname(dirname(__FILE__)) . '/' . self::$__tldList, self::_fetchRemoteContents(self::$__tldUrl))) {
-			return true;
-		}
-		return false;
-	}
-
-/**
- * Save remote contents
- *
- * Here we are just going to save data to a specified path/file
- *
- * @access private
- * @param string $saveFile
- * @param string $contentsToSave
- * @return int
- */
-	public static function saveRemoteContents($saveFile = null, $contentsToSave = null) {
-		return file_put_contents($saveFile, $contentsToSave, LOCK_EX);
-	}
-
-/**
- * Fetch remote contents
- *
- * Give a url and we will fetch the contents
- *
- * @param string$remoteFile
- * @return string
- */
-	protected static function _fetchRemoteContents($remoteFile = null) {
-		return file_get_contents($remoteFile);
 	}
 
 /**
@@ -534,7 +477,7 @@ class DomainValidation {
  */
 	private function __validTLD() {
 		$tldRegex = null;
-		foreach (file(self::$__tldList) as $tld) {
+		foreach (file(Remote::$__tldList) as $tld) {
 			if (preg_match('/^[\w]+$/', $tld)) {
 				$tldRegex .= preg_replace('/\W/', '', $tld) . "|";
 			}
